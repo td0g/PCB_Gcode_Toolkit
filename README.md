@@ -24,6 +24,14 @@ If you have a text file with a list of XYZ coordinates, you can use the convertT
 
 To apply a Z-probe array to a gcode file, drag the .CSV file with the array and the .Gcode file onto the gcodeAutoLevel.vbs script.
 
+## Settings
+
+To adjust the script settings, open the gcodeAutoLevel.vbs script in a text editor.  The following settings can be found near the top:
+
+- decimalPlaces   *(Precision of output file - Default is 2 decimal places)*
+- maxLineLength   *(Maximum length of a line to leave undivided - Default is 3mm)*
+- lineLength      *(If line is going to be divided, maximum length of line segments - Default is 2mm)*
+
 ## Example
 
 ### 1.
