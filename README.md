@@ -43,7 +43,7 @@ X:0 Y:10 Z:0.06
 X:10 Y:0 Z:0.08
 X:10 Y:10 Z:0.02
 
-###2.
+### 2.
 
 Select the .CSV file AND the .gcode file.  Drag them onto the gcodeAutoLevel.csv script.  It will display a couple notifications before completion and one when it is completed.  If your .gcode file has thousands of lines, then be patient while it works - it may take several minutes.
 
