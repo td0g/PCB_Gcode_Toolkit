@@ -30,18 +30,25 @@ To apply a Z-probe array to a gcode file, drag the .CSV file with the array and 
 
 If you have a .CSV file that looks like this, then proceed to step 2:
 
-X,Y,Z
-0,0,0
-0,10,0.06
-10,0,0.08
-10,10,0.02
+*X,Y,Z*
+
+*0,0,0*
+
+*0,10,0.06*
+
+*10,0,0.08*
+
+*10,10,0.02*
 
 If you have a text file that contains data like this, then drag the file onto the convertTextToCSV.vbs script:
 
-X:0 Y:0 Z:0
-X:0 Y:10 Z:0.06
-X:10 Y:0 Z:0.08
-X:10 Y:10 Z:0.02
+*X:0 Y:0 Z:0*
+
+*X:0 Y:10 Z:0.06*
+
+*X:10 Y:0 Z:0.08*
+
+*X:10 Y:10 Z:0.02*
 
 ### 2.
 
