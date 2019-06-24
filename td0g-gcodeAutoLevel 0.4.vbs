@@ -5,7 +5,7 @@
 'Outputs a new Gcode with active vertical axis mapping
 
 'The vertical position of point 0, 0 is not modified
-'Please register the tool at point 0, 0 before starting gCode
+'Please register the tool at point 0, 0 before executing gCode
 
 '###################################################################################
 
@@ -58,6 +58,7 @@
 '0.4
 	'2019-06-24
 	'Only divides lines where it is beneficial
+	'Now accepts .csv OR .txt files
 
 	
 '###################################################################################
@@ -69,14 +70,14 @@
 
 'Load arguments
 if WScript.Arguments.Count <> 2 then
-	msgbox "Please include gCode and CSV"
+	msgbox "Please include gCode and CSV" & vbNewLine & vbNewLine & "For more information, please visit github.com/td0g/gcode_auto_level"
 	WScript.quit
 end if
 
 Set Arg = WScript.Arguments
 
 'Read files into memory
-if lcase(right(arg(0),4)) = ".csv" then
+if lcase(right(arg(0),4)) = ".csv" or lcase(right(arg(0),4)) = ".txt" then
 	if lcase(right(arg(1),6)) = ".gcode" then
 		iCSVfn = arg(0)
 		Set objFile = CreateObject("Scripting.FileSystemObject").OpenTextFile(arg(0),1)
@@ -87,10 +88,10 @@ if lcase(right(arg(0),4)) = ".csv" then
 		gcodeText = Split(objFile.ReadAll,Chr(10))
 		objFile.Close
 	else
-		msgbox "Please include Gcode"
+		msgbox "Please include Gcode" & vbNewLine & vbNewLine & "For more information, please visit github.com/td0g/gcode_auto_level"
 		wscript.quit
 	end if
-elseif lcase(right(arg(1),4)) = ".csv" then
+elseif lcase(right(arg(1),4)) = ".csv" or lcase(right(arg(0),4)) = ".txt" then
 	if lcase(right(arg(0),6)) = ".gcode" then
 		iCSVfn = arg(1)
 		Set objFile = CreateObject("Scripting.FileSystemObject").OpenTextFile(arg(1),1)
@@ -101,11 +102,11 @@ elseif lcase(right(arg(1),4)) = ".csv" then
 		gcodeText = Split(objFile.ReadAll,Chr(10))
 		objFile.Close
 	else
-		msgbox "Please include Gcode"
+		msgbox "Please include Gcode" & vbNewLine & vbNewLine & "For more information, please visit github.com/td0g/gcode_auto_level"
 		wscript.quit
 	end if
 else
-	msgbox "Please Include CSV"
+	msgbox "Please Include CSV" & vbNewLine & vbNewLine & "For more information, please visit github.com/td0g/gcode_auto_level"
 	Wscript.quit
 end if
 
@@ -255,7 +256,7 @@ for i = 0 to yListSize
 next
 objfile.close
 Set objFile = Nothing
-msgbox "Array file: " & replace(iCSVfn,".","_array.")
+
 
 
 
@@ -286,12 +287,13 @@ lastFRB = ""
 cornerCount = 0
 sideCount = 0
 
+oName = replace(oName, ".gcode", ".tmp")
 Set objFile = CreateObject("Scripting.FileSystemObject").OpenTextFile(oName,2,true)
 
 For i = LBound(gcodeText) to UBound(gcodetext)
 	gc = gcodetext(i)
 	if left(gc,3) <> "G00" and left(gc, 3) <> "G01" and left(gc,2) <> "G0" and left(gc, 2) <> "G1" then	'Copy these lines verbatim
-		objFile.write gc ' & vbCrLf
+		objFile.write gc
 	elseif left(gc,1) = "G" then
 		gc = replace(gc, "G00", "G0")
 		gc = replace(gc, "G01", "G1")
@@ -350,7 +352,7 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 					xLine = xLine + 1
 				wend
 				yLine = 0
-				while (newYFloat > yList(yLine)
+				while newYFloat > yList(yLine)
 					yLine = yLine + 1
 				wend
 				if zOldPos < ignoreAboveZ or zNewPos < ignoreAboveZ then
@@ -358,9 +360,9 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 					xIntPos = xNewPos
 					yIntPos = yNewPos
 					zIntPos = zNewPos
-				else if xNewPos > xList(xLine) or ynewPos > yList(yLine)
+				elseif xNewPos > xList(xLine) or ynewPos > yList(yLine) then
 					'Yes, we are going to cross the line
-					if (xNewPos - newXFloat) / (xList(xLine) - newXFloat) > (yNewPos - newYFloat) / (yList(yLine) - newYFloat)
+					if (xNewPos - newXFloat) / (xList(xLine) - newXFloat) > (yNewPos - newYFloat) / (yList(yLine) - newYFloat) then
 						'Crossing X line first
 						xIntPos = xList(xLine)
 						yIntPos = (xNewpos - xOldPos) / (xIntPos - xOldPos) * (yNewPos - yOldPos) + yOldPos
@@ -521,6 +523,7 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 					lastFRB = FeedRateB
 				end if
 				objFile.write vbCrLf
+				
 			wend
 		else 
 			objFile.write GType & vbCrLf
@@ -531,4 +534,11 @@ Next
 'Close the file.
 objFile.Close
 Set objFile = Nothing
-msgbox "Done!" & vbCrLf & "Levelled Gcode: " & oName & vbCrLf & "Points at or outside corners: " & cornerCount & vbCrLf & "Points at or outside edges: " & sideCount & vbNewLine & vbNewLine & "        X          Y          Z" & vbNewLine & "Max: " & xMax & "    " & yMax & "    " & zMax & vbnewline & "Min: " & xMin & "    " & yMin & "    " & zMin
+
+'Rename .tmp to .gcode
+Dim Fso
+Set Fso = WScript.CreateObject("Scripting.FileSystemObject")
+Fso.MoveFile oName, replace(oName,".tmp",".gcode")
+
+'Notify user
+msgbox "Done!" & vbCrLf & "Levelled Gcode: " & replace(oName,".tmp",".gcode") & vbCrLf & "Array file: " & replace(iCSVfn,".","_array.") & vbCrLf & "Points at or outside corners: " & cornerCount & vbCrLf & "Points at or outside edges: " & sideCount & vbNewLine & vbNewLine & "        X          Y          Z" & vbNewLine & "Max: " & xMax & "    " & yMax & "    " & zMax & vbnewline & "Min: " & xMin & "    " & yMin & "    " & zMin
