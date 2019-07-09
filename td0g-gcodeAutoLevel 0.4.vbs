@@ -59,6 +59,7 @@
 	'2019-06-24
 	'Only divides lines where it is beneficial
 	'Now accepts .csv OR .txt files
+	'Bilinear Interpolation Bug Fix
 
 	
 '###################################################################################
@@ -233,7 +234,8 @@ for i = 0 to xListSize
 		if zArray(i, j) = "" then emptyZValues = emptyZValues + 1
 	next
 next
-if emptyZValues > 0 then msgbox "Missing Probe Locations Found: " & emptyZValues & vbCrLf & "Script will attempt to produce Gcode anyway" & vbCrLf & "It is recommended not to use output"
+if emptyZValues > 0 then msgbox "Missing Probe Locations Found: " & emptyZValues & vbCrLf &_ 
+	"Script will attempt to produce Gcode anyway" & vbCrLf & "It is recommended not to use output"
 
 '###################################################################################
 
@@ -262,17 +264,23 @@ Set objFile = Nothing
 
 '###################################################################################
 
-			'Write Gcode
+			'Process Gcode
 
 '###################################################################################
 
 
-xIntPos = 0
-yIntPos = 0
-zIntPos = 0
-xNewPos = 0
-yNewPos = 0
-zNewPos = 0
+xIntPos = 0.0
+yIntPos = 0.0
+zIntPos = 0.0
+xLastIntPos = 0.0
+yLastIntPos = 0.0
+zLastIntPos = 0.0
+xTarget = 0.0
+yTarget = 0.0
+zTarget = 0.0
+xLastTarget = 0.0
+yLastTarget = 0.0
+zLastTarget = 0.0
 oldZFloat = 999.999
 xMin = 999.999
 xMax = -999.999
@@ -280,26 +288,24 @@ yMin = 999.999
 yMax = -999.999
 zMin = 999.999
 zMax = -999.999
+firstMove = true
 
 lastFRA = ""
 lastFRB = ""
 
 cornerCount = 0
-sideCount = 0
+edgeCount = 0
 
 oName = replace(oName, ".gcode", ".tmp")
 Set objFile = CreateObject("Scripting.FileSystemObject").OpenTextFile(oName,2,true)
 
 For i = LBound(gcodeText) to UBound(gcodetext)
 	gc = gcodetext(i)
-	if left(gc,3) <> "G00" and left(gc, 3) <> "G01" and left(gc,2) <> "G0" and left(gc, 2) <> "G1" then	'Copy these lines verbatim
+	if left(gc,3) <> "G00" and left(gc, 3) <> "G01" and left(gc,3) <> "G0 " and left(gc, 3) <> "G1 " then	'Copy these lines verbatim
 		objFile.write gc
 	elseif left(gc,1) = "G" then
 		gc = replace(gc, "G00", "G0")
 		gc = replace(gc, "G01", "G1")
-		xOldPos = xNewPos
-		yOldPos = yNewPos
-		zOldPos = zNewPos
 		gc = replace(gc,Chr(10),"")	'Remove newline chars
 		gc = replace(gc,Chr(13),"")	'Remove newline chars
 		g = split(gc," ")
@@ -308,18 +314,21 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 		z = 0
 		Feedrate = ""
 		GType = ""
+		xLastTarget = xTarget
+		yLastTarget = yTarget
+		zLastTarget = zTarget
 		for j = LBound(g) to UBound(g)
 			g(j) = replace(g(j)," ","")
 			if inStr(g(j),"G") > 0 then 
 				GType = g(j)
 			elseif inStr(g(j),"X") > 0 then 
-				xNewPos = CDbl(replace(g(j),"X",""))
+				xTarget = CDbl(replace(g(j),"X",""))
 				x = 1
 			elseif inStr(g(j),"Y") > 0 then 
-				yNewPos = CDbl(replace(g(j),"Y",""))
+				yTarget = CDbl(replace(g(j),"Y",""))
 				y = 1
 			elseif inStr(g(j),"Z") > 0 then 
-				zNewPos = CDbl(replace(g(j),"Z",""))
+				zTarget = CDbl(replace(g(j),"Z",""))
 				z = 1
 			elseif inStr(g(j),"F") > 0 then 
 				if GType = "G0" then
@@ -333,54 +342,138 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 		
 '###################################################################################
 
-			'Get Z Offset
+			'Calculate position of intermediate point
 
 '###################################################################################
 
-'		xB 	xA 
-'	yB	zBB	zAB
-'	yA	zBA	zBB
-
 		if x or y or z then
-			dist = ((xNewPos-xOldPos)^2 + (yNewPos - yOldPos)^2)^0.5
-			while newXFloat <> xNewPos and newYFloat <> yNewPos
-			
-				'1. Are we going to cross an X or Y int before reaching target?
-				'2. Which line are we going to cross next?
-				xLine = 0
-				while newXFloat > xList(xLine)
-					xLine = xLine + 1
-				wend
-				yLine = 0
-				while newYFloat > yList(yLine)
-					yLine = yLine + 1
-				wend
-				if zOldPos < ignoreAboveZ or zNewPos < ignoreAboveZ then
-					'We are above workpiece, just make one line
-					xIntPos = xNewPos
-					yIntPos = yNewPos
-					zIntPos = zNewPos
-				elseif xNewPos > xList(xLine) or ynewPos > yList(yLine) then
-					'Yes, we are going to cross the line
-					if (xNewPos - newXFloat) / (xList(xLine) - newXFloat) > (yNewPos - newYFloat) / (yList(yLine) - newYFloat) then
-						'Crossing X line first
-						xIntPos = xList(xLine)
-						yIntPos = (xNewpos - xOldPos) / (xIntPos - xOldPos) * (yNewPos - yOldPos) + yOldPos
-						zIntPos = (zNewpos - zOldPos) / (zIntPos - zOldPos) * (zNewPos - zOldPos) + zOldPos
-					else
-						'Crossing Y line first
-						yIntPos = yList(yLine)
-						xIntPos = (yNewpos - yOldPos) / (yIntPos - yOldPos) * (xNewPos - xOldPos) + xOldPos
-						zIntPos = (yNewpos - yOldPos) / (yIntPos - yOldPos) * (zNewPos - zOldPos) + zOldPos
-					end if
+			dist = ((xTarget-xLastTarget)^2 + (yTarget - yLastTarget)^2 + (zTarget - zLastTarget)^2)^0.5
+			while xIntPos <> xTarget or yIntPos <> yTarget or zIntPos <> zTarget
+				xLastIntPos = xIntPos
+				yLastIntPos = yIntPos
+				zLastIntPos = zIntPos
+'Only moving Z - go straight there
+				if x = 0 and y = 0 then
+					zIntPos = zTarget
+'We are above workpiece or this is the first move, just make one line
+				elseif zLastTarget > ignoreAboveZ or zTarget > ignoreAboveZ or firstMove then
+					firstMove = false
+					xIntPos = xTarget
+					yIntPos = yTarget
+					zIntPos = zTarget
+'1. Are we going to cross an X or Y int before reaching target?
+'2. Which line are we going to cross first?
 				else
-					'Nope, we are going to end this line
-					xIntPos = xNewPos
-					yIntPos = yNewPos
-					zIntPos = zNewPos
+					if x then
+						if xLastIntPos < xList(0) or xTarget =< xList(0) then
+							if xLastIntPos =< xList(0) and xTarget =< xList(0) then
+								xIntPos = xTarget
+							else
+								xIntPos = xList(0)
+							end if
+						elseif xLastIntPos > xList(xlistsize) or xTarget => xList(xlistsize) then
+							if xLastIntPos => xList(xlistsize) and xTarget => xList(xlistsize) then
+								xIntPos = xTarget
+							else
+								xIntPos = xList(xlistsize)
+							end if
+						else 
+							if xTarget > xLastTarget then
+								xLine = 0
+								while xIntPos => xList(xLine)
+									xLine = xLine + 1
+								wend
+							else								
+								xLine = xListSize
+								while xIntPos =< xList(xLine)
+									xLine = xLine - 1
+								wend
+							end if
+
+							if xTarget > xIntPos then
+								if xTarget > xList(xLine) then 
+									xIntPos = xList(xLine)
+								else
+									xIntPos = xTarget
+								end if
+							elseif xTarget < xIntPos then
+								if xTarget < xList(xLine - 1) then 
+									xIntPos = xList(xLine - 1)
+								else
+									xIntPos = xTarget
+								end if
+							end if
+						end if
+					else
+						xIntPos = xTarget 'X is not moving, just set to final target
+					end if
+					
+					if y then
+						if yLastIntPos < yList(0) or yTarget =< yList(0) then
+							if yLastIntPos =< yList(0) and yTarget =< yList(0) then
+								yIntPos = yTarget
+							else
+								yIntPos = yList(0)
+							end if
+						elseif yLastIntPos > yList(ylistsize) or yTarget => yList(ylistsize) then
+							if yLastIntPos => yList(ylistsize) and yTarget => yList(ylistsize) then
+								yIntPos = yTarget
+							else
+								yIntPos = yList(ylistsize)
+							end if
+						else 
+							if yTarget > yLastTarget then
+								yLine = 0
+								while yIntPos => yList(yLine)
+									yLine = yLine + 1
+								wend
+							else								
+								yLine = yListSize
+								while yIntPos =< yList(yLine)
+									yLine = yLine - 1
+								wend
+							end if
+							if yTarget > yIntPos then
+								if yTarget > yList(yLine) then 
+									yIntPos = yList(yLine)
+								else
+									yIntPos = yTarget
+								end if
+							elseif yTarget < yIntPos then
+								if yTarget < yList(yLine - 1) then 
+									yIntPos = yList(yLine - 1)
+								else
+									yIntPos = yTarget
+								end if
+							end if
+						end if
+					else
+						yIntPos = yTarget 'Y is not moving, just set to final target
+					end if
+					
+'What intPos comes first?
+					if y = 0 then	'Y is not moving, X comes first
+						yIntPos = yLastTarget
+						zIntPos = (xIntPos - xLastTarget) / (xTarget - xLastTarget) * (zTarget - zLastTarget) + zLastTarget
+					elseif x = 0 then	'X is not moving, Y comes first
+						xIntPos = xLastTarget
+						zIntPos = (yIntPos - xLastTarget) / (yTarget - yLastTarget) * (zTarget - zLastTarget) + zLastTarget
+					elseif (xIntPos - xLastIntPos) / (xTarget - xLastTarget) > (yIntPos - yLastIntPos) / (yTarget - yLastTarget) then 'Crossing X line first
+						yIntPos = (xIntPos - xLastTarget) / (xTarget - xLastTarget) * (yTarget - yLastTarget) + yLastTarget
+						zIntPos = (xIntPos - xLastTarget) / (xTarget - xLastTarget) * (zTarget - zLastTarget) + zLastTarget
+					else 'Crossing Y line first
+						xIntPos = (yIntPos - yLastTarget) / (yTarget - yLastTarget) * (xTarget - xLastTarget) + xLastTarget
+						zIntPos = (yIntPos - xLastTarget) / (yTarget - yLastTarget) * (zTarget - zLastTarget) + zLastTarget
+					end if
 				end if
 				
-				'Is point outside corner?
+'###################################################################################
+
+			'Apply Bilinear Interpolation
+
+'###################################################################################
+				
+'Is point outside corner?
 				if xIntPos <= xList(0) and yIntPos <= yList(0) then				
 					P = zArray(0, 0)
 					cornerCount = cornerCount + 1
@@ -388,15 +481,15 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 					P = zArray(0, yListSize)
 					cornerCount = cornerCount + 1
 				elseif xIntPos >= xList(xListSize) and yIntPos >= yList(yListSize) then				
-					P = zArray(0, yListSize)
+					P = zArray(xListSize, yListSize)
 					cornerCount = cornerCount + 1
 				elseif xIntPos >= xList(xListSize) and yIntPos <= yList(0) then					
 					P = zArray(xListSize, 0)
 					cornerCount = cornerCount + 1
 					
-				'Is point outside edge?
+'Is point outside edge?
 				elseif xIntPos <= xList(0) then
-					sideCount = sideCount + 1
+					edgeCount = edgeCount + 1
 					for j = 0 to yListSize
 						if yIntPos < yList(j) then
 							yP = j
@@ -406,12 +499,10 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 					yA = yList(yP-1)
 					yB = yList(yP)
 					zAB = zArray(0, yP-1)
-					zBB = zArray(0, yP)
-							
+					zBB = zArray(0, yP)	
 					P = ((yB - yIntPos)/(yB - yA))*zAB + ((yIntPos - ya)/(yb - ya))*zBB
-					
 				elseif xIntPos >= xList(xListSize) then
-					sideCount = sideCount + 1
+					edgeCount = edgeCount + 1
 					for j = 0 to yListSize
 						if yIntPos < yList(j) then
 							yP = j
@@ -422,11 +513,9 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 					yB = yList(yP)
 					zAB = zArray(xListSize, yP-1)
 					zBB = zArray(xListSize, yP)
-					
 					P = ((yB - yIntPos)/(yB - yA))*zAB + ((yIntPos - ya)/(yb - ya))*zBB
-					
 				elseif yIntPos <= yList(0) then
-					sideCount = sideCount + 1
+					edgeCount = edgeCount + 1
 					for j = 0 to xListSize
 						if xIntPos < xList(j) then
 							xP = j
@@ -437,11 +526,9 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 					xB = xList(xP)
 					zAA = zArray(xP-1, 0)
 					zBA = zArray(xP, 0)
-					
 					P = ((xIntPos - xA)/(xB - xA))*zBA + ((xB - xIntPos)/(xB - xA))*zAA
-					
 				elseif yIntPos >= yList(ylistSize) then
-					sideCount = sideCount + 1
+					edgeCount = edgeCount + 1
 					for j = 0 to xListSize
 						if xIntPos < xList(j) then
 							xP = j
@@ -452,12 +539,12 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 					xB = xList(xP)
 					zAA = zArray(xP-1, yListSize)
 					zBA = zArray(xP, yListSize)
-					
 					P = ((xIntPos - xA)/(xB - xA))*zBA + ((xB - xIntPos)/(xB - xA))*zAA
 					
-				else	'Inside Grid --> Bilinear Interpolation		
-					' https://en.wikipedia.org/wiki/Bilinear_interpolation
-					'http://supercomputingblog.com/graphics/coding-bilinear-interpolation/
+'Inside Grid --> Bilinear Interpolation		
+' https://en.wikipedia.org/wiki/Bilinear_interpolation
+'http://supercomputingblog.com/graphics/coding-bilinear-interpolation/
+				else	
 					for j = 0 to xListSize
 						if xIntPos < xList(j) then
 							xP = j
@@ -484,11 +571,11 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 					P = ((yB - yIntPos)/(yB - yA))*rA + ((yIntPos - yA)/(yB - yA))*rB
 				end if
 			
-		'###################################################################################
+'###################################################################################
 
-					'Resume Writing Gcode
+			'Write to Gcode File
 
-		'###################################################################################
+'###################################################################################
 				
 				objFile.write GType
 				if x then
@@ -538,7 +625,11 @@ Set objFile = Nothing
 'Rename .tmp to .gcode
 Dim Fso
 Set Fso = WScript.CreateObject("Scripting.FileSystemObject")
+if Fso.FileExists(replace(oName,".tmp",".gcode")) then Fso.DeleteFile replace(oName,".tmp",".gcode")
 Fso.MoveFile oName, replace(oName,".tmp",".gcode")
 
 'Notify user
-msgbox "Done!" & vbCrLf & "Levelled Gcode: " & replace(oName,".tmp",".gcode") & vbCrLf & "Array file: " & replace(iCSVfn,".","_array.") & vbCrLf & "Points at or outside corners: " & cornerCount & vbCrLf & "Points at or outside edges: " & sideCount & vbNewLine & vbNewLine & "        X          Y          Z" & vbNewLine & "Max: " & xMax & "    " & yMax & "    " & zMax & vbnewline & "Min: " & xMin & "    " & yMin & "    " & zMin
+msgbox "Done!" & vbCrLf & vbCrLf & "Levelled Gcode: " & replace(oName,".tmp",".gcode") & vbCrLf & vbCrLf & "Array file: " & replace(iCSVfn,".","_array.") &_ 
+	vbCrLf & vbCrLf & "Points at or outside corners:  " & cornerCount & vbCrLf & "Points at or outside edges:    " & edgeCount & vbNewLine & vbNewLine &_ 
+	"           X           Y           Z" & vbNewLine & "Max:   " & left(xMax & "            ",12) & left(yMax & "            ",12) & zMax & vbnewline & "Min:   " &_ 
+	left(xMin & "            ",12) & left(yMin & "            ",12) & zMin
