@@ -92,7 +92,7 @@ if lcase(right(arg(0),4)) = ".csv" or lcase(right(arg(0),4)) = ".txt" then
 		msgbox "Please include Gcode" & vbNewLine & vbNewLine & "For more information, please visit github.com/td0g/gcode_auto_level"
 		wscript.quit
 	end if
-elseif lcase(right(arg(1),4)) = ".csv" or lcase(right(arg(0),4)) = ".txt" then
+elseif lcase(right(arg(1),4)) = ".csv" or lcase(right(arg(1),4)) = ".txt" then
 	if lcase(right(arg(0),6)) = ".gcode" then
 		iCSVfn = arg(1)
 		Set objFile = CreateObject("Scripting.FileSystemObject").OpenTextFile(arg(1),1)
@@ -299,6 +299,28 @@ edgeCount = 0
 oName = replace(oName, ".gcode", ".tmp")
 Set objFile = CreateObject("Scripting.FileSystemObject").OpenTextFile(oName,2,true)
 
+'Get starting Z position
+For i = LBound(gcodeText) to UBound(gcodetext)
+	gc = gcodetext(i)
+	if left(gc,3) = "G00" or left(gc,3) = "G01" or left(gc,3) = "G0 " or left(gc,3) = "G1 " then
+		g = split(gc," ")
+		for j = LBound(g) to UBound(g)
+			g(j) = replace(g(j)," ","")
+			if inStr(g(j),"Z") > 0 then 
+				zLastTarget = CDbl(replace(g(j),"Z",""))
+				zTarget = zLastTarget
+				exit for
+				exit for
+			end if
+		next
+	end if
+next
+objFile.Close
+Set objFile = Nothing
+
+
+Set objFile = CreateObject("Scripting.FileSystemObject").OpenTextFile(oName,2,true)
+
 For i = LBound(gcodeText) to UBound(gcodetext)
 	gc = gcodetext(i)
 	if left(gc,3) <> "G00" and left(gc, 3) <> "G01" and left(gc,3) <> "G0 " and left(gc, 3) <> "G1 " then	'Copy these lines verbatim
@@ -323,13 +345,13 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 				GType = g(j)
 			elseif inStr(g(j),"X") > 0 then 
 				xTarget = CDbl(replace(g(j),"X",""))
-				x = 1
+				if xTarget <> xLastTarget or firstMove then x = 1
 			elseif inStr(g(j),"Y") > 0 then 
 				yTarget = CDbl(replace(g(j),"Y",""))
-				y = 1
+				if yTarget <> yLastTarget or firstMove then y = 1
 			elseif inStr(g(j),"Z") > 0 then 
 				zTarget = CDbl(replace(g(j),"Z",""))
-				z = 1
+				if zTarget <> zLastTarget or firstMove then z = 1
 			elseif inStr(g(j),"F") > 0 then 
 				if GType = "G0" then
 					FeedrateA = " " & g(j)
@@ -346,14 +368,14 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 
 '###################################################################################
 
-		if x or y or z then
+		if x or y or z or firstMove then
 			dist = ((xTarget-xLastTarget)^2 + (yTarget - yLastTarget)^2 + (zTarget - zLastTarget)^2)^0.5
-			while xIntPos <> xTarget or yIntPos <> yTarget or zIntPos <> zTarget
+			while xIntPos <> xTarget or yIntPos <> yTarget or zIntPos <> zTarget or firstMove
 				xLastIntPos = xIntPos
 				yLastIntPos = yIntPos
 				zLastIntPos = zIntPos
 'Only moving Z - go straight there
-				if x = 0 and y = 0 then
+				if x = 0 and y = 0 and firstMove = false then
 					zIntPos = zTarget
 'We are above workpiece or this is the first move, just make one line
 				elseif zLastTarget > ignoreAboveZ or zTarget > ignoreAboveZ or firstMove then
@@ -577,7 +599,7 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 
 '###################################################################################
 				
-				objFile.write GType
+				if x or y or z then objFile.write GType
 				if x then
 					newXFloat = round(xIntPos, decimalPlaces)
 					objFile.Write(" X")
