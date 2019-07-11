@@ -281,7 +281,7 @@ zTarget = 0.0
 xLastTarget = 0.0
 yLastTarget = 0.0
 zLastTarget = 0.0
-oldZFloat = 999.999
+zRoundedFloatOld = 999.999
 xMin = 999.999
 xMax = -999.999
 yMin = 999.999
@@ -293,6 +293,8 @@ firstMove = true
 lastFRA = ""
 lastFRB = ""
 
+newTotalCount = 0
+oldTotalCount = 0
 cornerCount = 0
 edgeCount = 0
 
@@ -326,6 +328,7 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 	if left(gc,3) <> "G00" and left(gc, 3) <> "G01" and left(gc,3) <> "G0 " and left(gc, 3) <> "G1 " then	'Copy these lines verbatim
 		objFile.write gc
 	elseif left(gc,1) = "G" then
+		oldTotalCount = oldTotalCount + 1
 		gc = replace(gc, "G00", "G0")
 		gc = replace(gc, "G01", "G1")
 		gc = replace(gc,Chr(10),"")	'Remove newline chars
@@ -419,8 +422,8 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 									xIntPos = xTarget
 								end if
 							elseif xTarget < xIntPos then
-								if xTarget < xList(xLine - 1) then 
-									xIntPos = xList(xLine - 1)
+								if xTarget < xList(xLine) then 
+									xIntPos = xList(xLine)
 								else
 									xIntPos = xTarget
 								end if
@@ -462,8 +465,8 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 									yIntPos = yTarget
 								end if
 							elseif yTarget < yIntPos then
-								if yTarget < yList(yLine - 1) then 
-									yIntPos = yList(yLine - 1)
+								if yTarget < yList(yLine) then 
+									yIntPos = yList(yLine)
 								else
 									yIntPos = yTarget
 								end if
@@ -480,12 +483,12 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 					elseif x = 0 then	'X is not moving, Y comes first
 						xIntPos = xLastTarget
 						zIntPos = (yIntPos - xLastTarget) / (yTarget - yLastTarget) * (zTarget - zLastTarget) + zLastTarget
-					elseif (xIntPos - xLastIntPos) / (xTarget - xLastTarget) > (yIntPos - yLastIntPos) / (yTarget - yLastTarget) then 'Crossing X line first
-						yIntPos = (xIntPos - xLastTarget) / (xTarget - xLastTarget) * (yTarget - yLastTarget) + yLastTarget
-						zIntPos = (xIntPos - xLastTarget) / (xTarget - xLastTarget) * (zTarget - zLastTarget) + zLastTarget
-					else 'Crossing Y line first
+					elseif (xIntPos - xLastIntPos) / (xTarget - xLastTarget) > (yIntPos - yLastIntPos) / (yTarget - yLastTarget) then 'Crossing Y line first
 						xIntPos = (yIntPos - yLastTarget) / (yTarget - yLastTarget) * (xTarget - xLastTarget) + xLastTarget
 						zIntPos = (yIntPos - xLastTarget) / (yTarget - yLastTarget) * (zTarget - zLastTarget) + zLastTarget
+					else 'Crossing X line first
+						yIntPos = (xIntPos - xLastTarget) / (xTarget - xLastTarget) * (yTarget - yLastTarget) + yLastTarget
+						zIntPos = (xIntPos - xLastTarget) / (xTarget - xLastTarget) * (zTarget - zLastTarget) + zLastTarget
 					end if
 				end if
 				
@@ -494,9 +497,12 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 			'Apply Bilinear Interpolation
 
 '###################################################################################
-				
+
+'Is this a hop?
+				if zIntPos > ignoreAboveZ then
+					P = 0
 'Is point outside corner?
-				if xIntPos <= xList(0) and yIntPos <= yList(0) then				
+				elseif xIntPos <= xList(0) and yIntPos <= yList(0) then				
 					P = zArray(0, 0)
 					cornerCount = cornerCount + 1
 				elseif xIntPos <= xList(0) and yIntPos >= yList(yListSize) then				
@@ -599,29 +605,32 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 
 '###################################################################################
 				
-				if x or y or z then objFile.write GType
+				zRoundedFloat = round(zIntPos + P,decimalPlaces)
+				if x or y or zRoundedFloat <> zRoundedFloatOld then 
+					objFile.write GType
+					newTotalCount = newTotalCount + 1
+				end if
 				if x then
-					newXFloat = round(xIntPos, decimalPlaces)
+					xRoundedFloat = round(xIntPos, decimalPlaces)
 					objFile.Write(" X")
-					objFile.Write(newXFloat)
-					if newXFloat > xMax then xMax = newXFloat
-					if newXFloat < xMin then xMin = newXFloat
+					objFile.Write(xRoundedFloat)
+					if xRoundedFloat > xMax then xMax = xRoundedFloat
+					if xRoundedFloat < xMin then xMin = xRoundedFloat
 				end if
 				if y then
-					newYFloat = round(yIntPos, decimalPlaces)
+					yRoundedFloat = round(yIntPos, decimalPlaces)
 					objFile.Write(" Y")
-					objFile.Write(newYFloat)
-					if newYFloat > yMax then yMax = newYFloat
-					if newYFloat < yMin then yMin = newYFloat
+					objFile.Write(yRoundedFloat)
+					if yRoundedFloat > yMax then yMax = yRoundedFloat
+					if yRoundedFloat < yMin then yMin = yRoundedFloat
 				end if
 				if z or x or y then
-					newZFloat = round(zIntPos + P,decimalPlaces)
-					if newZFloat <> oldZFloat then
+					zRoundedFloat = round(zIntPos + P,decimalPlaces)
+					if zRoundedFloat <> zRoundedFloatOld then
 						objFile.Write(" Z")
-						objFile.Write(newZFloat)
-						oldZFloat = newZFloat
-						if newZFloat > zMax then zMax = newZFloat
-						if newZFloat < zMin then zMin = newZFloat
+						objFile.Write(zRoundedFloat)
+						if zRoundedFloat > zMax then zMax = zRoundedFloat
+						if zRoundedFloat < zMin then zMin = zRoundedFloat
 					end if
 				end if
 				if GType = "G0" and FeedrateA <> lastFRA then
@@ -632,15 +641,21 @@ For i = LBound(gcodeText) to UBound(gcodetext)
 					lastFRB = FeedRateB
 				end if
 				objFile.write vbCrLf
-				
+				zRoundedFloatOld = zRoundedFloat
 			wend
-		else 
-			objFile.write GType & vbCrLf
+		'else 
+			'objFile.write GType & vbCrLf
 		End If
 	end if
 Next
 
-'Close the file.
+'###################################################################################
+
+			'Wrap it up
+
+'###################################################################################
+
+'Close the file
 objFile.Close
 Set objFile = Nothing
 
@@ -651,7 +666,11 @@ if Fso.FileExists(replace(oName,".tmp",".gcode")) then Fso.DeleteFile replace(oN
 Fso.MoveFile oName, replace(oName,".tmp",".gcode")
 
 'Notify user
+percentInside = 0.00
+percentInside = 100 * (1 - (edgeCount + cornerCount) / oldTotalCount)
 msgbox "Done!" & vbCrLf & vbCrLf & "Levelled Gcode: " & replace(oName,".tmp",".gcode") & vbCrLf & vbCrLf & "Array file: " & replace(iCSVfn,".","_array.") &_ 
-	vbCrLf & vbCrLf & "Points at or outside corners:  " & cornerCount & vbCrLf & "Points at or outside edges:    " & edgeCount & vbNewLine & vbNewLine &_ 
-	"           X           Y           Z" & vbNewLine & "Max:   " & left(xMax & "            ",12) & left(yMax & "            ",12) & zMax & vbnewline & "Min:   " &_ 
+	vbCrLf & vbCrLf & "Points before / after:  " & oldTotalCount & " / " & newTotalCount &_
+	vbCrLf & "Points at or outside corners:  " & cornerCount & vbCrLf & "Points at or outside edges:    " & edgeCount &_
+	vbCrLf & "Percentage inside probed area:  " & round(percentInside,1) & "%" &_
+	vbNewLine & vbNewLine & "           X           Y           Z" & vbNewLine & "Max:   " & left(xMax & "            ",12) & left(yMax & "            ",12) & zMax & vbnewline & "Min:   " &_ 
 	left(xMin & "            ",12) & left(yMin & "            ",12) & zMin
