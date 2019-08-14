@@ -2,11 +2,11 @@
 
 ## Tools:
 
-Gcode Auto-Level
+1. Gcode Auto-Level
 
-Drill Optimizer
+2. Drill Optimizer
 
-# Gcode Auto-Level
+# 1. Gcode Auto-Level
 
 Many workpiece blanks aren't flat.  This is especially true of PCB blanks, which require precision cut depths but typically come with huge bends.  However this also becomes an issue at other times, such as engraving a poorly-planed piece of wood.
 
@@ -71,6 +71,6 @@ Select the .CSV file AND the .gcode file.  Drag them onto the gcodeAutoLevel.csv
 The script also generates another .CSV file which arranges the probe data into a matrix.  Feel free to delete when you are finished.
 
 
-# Drill Optimizer
+# 2. Drill Optimizer
 
 Eagle is notorious for creating an inefficient path for drilling holes.  This tool re-orders the drill order to reduce travel time.  Simply drag and drop the .gcode file onto the PCB Drill Optimizer.exe.  Although it isn't a perfect solution, the results are much better than the original from Eagle.
