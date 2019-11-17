@@ -12,19 +12,19 @@ This program contains several tools for post-processing gcode files from Eagle. 
 
 4. Etch/Drill Copy
 
-# 1. Etch Auto-Level
+## 1. Etch Auto-Level
 
 Many workpiece blanks aren't flat.  This is especially true of PCB blanks, which require precision cut depths but typically come with huge bends.  However this also becomes an issue at other times, such as engraving a poorly-planed piece of wood.
 
 If you are able to probe the surface of the blank workpiece, then you can use this tool to apply the data you collected to a .Gcode file.  It will create a new .Gcode file which constantly adjusts the Z height of the tool to account for the unevenness of the blank.
 
-# 2. Etch Optimizer
+## 2. Etch Optimizer
 
 Eagle has a habit of creating many separate etching tool paths.  This wastes lots of time as the mill has to raise the tool, move to the next path, lower the tool, then continue.
 
 The etch optimizer will combine all adjacent etch paths into one continuous cut, reducing travel time for the mill.  It's a simple way to increase efficiency.
 
-# 3. Drill Optimizer
+## 3. Drill Optimizer
 
 The drill order in Eagle is poorly optimized, resulting in a large and unnecessary amount of travel time.  By performing a travelling salesman algorithm on the drill order, the travel time can be reduced.
 
@@ -32,7 +32,7 @@ Two options are available for optimizing drill order: a 'standard' algorithm and
 
 The genetic permutation algorithm is more complicated.  It is inconsistent and not recommended for larger boards, but works very well with smaller boards.
 
-# 3. Copy
+## 4. Copy
 
 This tool simply copies the original gcode path to a new location (without deleting the original).  It is useful for cutting two identical boards on one PCB.
 
