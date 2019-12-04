@@ -12,6 +12,8 @@ This program contains several tools for post-processing gcode files from Eagle. 
 
 4. Etch/Drill Copy
 
+5. Draw Gcode Path
+
 ### 1. Etch Auto-Level
 
 Many workpiece blanks aren't flat.  This is especially true of PCB blanks, which require precision cut depths but typically come with huge bends.  However this also becomes an issue at other times, such as engraving a poorly-planed piece of wood.
@@ -35,6 +37,10 @@ The genetic permutation algorithm is more complicated.  It is inconsistent and n
 ### 4. Copy
 
 This tool simply copies the original gcode path to a new location (without deleting the original).  It is useful for cutting two identical boards on one PCB.
+
+### 5. Draw
+
+A quick way to review the gcode and check for issues.  Black lines are etches, red lines are travel.
 
 ## Instructions for Etch Auto-Levelling
 
