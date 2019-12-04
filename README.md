@@ -50,31 +50,9 @@ A quick way to review the gcode and check for issues.  Black lines are etches, r
 
 This tool does not help with collecting the Z-probe array data.  There are several methods of probing, it is up to you to implement them.
 
-### Convert to Usable CSV File
-
-The gcodeAutoLevel expects a .CSV file with three columns arranged in the following order: X, Y, Z.
-
-If you have a text file with a list of XYZ coordinates, you can use the convertTextToCSV.vbs script to generate a formatted CSV file.  Just drag the text file with the Z-probe array data onto the convertTextToCSV.vbs script
-
 ### Applying the Probe Data to the Gcode File
 
-To apply a Z-probe array to a gcode file, drag the .CSV file with the array and the .Gcode file onto the gcodeAutoLevel.vbs script.
-
-## Example
-
-### 1.
-
-If you have a text file that contains data like this, then drag the file onto the convertTextToCSV.vbs script:
-
-*X:0 Y:0 Z:0*
-
-*X:0 Y:10 Z:0.06*
-
-*X:10 Y:0 Z:0.08*
-
-*X:10 Y:10 Z:0.02*
-
-It will generate a .CSV that is formatted as shown below.  If you already have a .CSV file that looks like this, then proceed to step 2:
+To apply a Z-probe array to a gcode file, drag the .CSV file with the array and the .Gcode file onto the program .exe file.  Currently, the program only accepts Z-probe data in the following format.  If you collect the data in a different format, feel free to suggest improvements to the program.
 
 *X,Y,Z*
 
@@ -85,9 +63,3 @@ It will generate a .CSV that is formatted as shown below.  If you already have a
 *10,0,0.08*
 
 *10,10,0.02*
-
-### 2.
-
-Select the .CSV file AND the .gcode file.  Drag them onto the gcodeAutoLevel.csv script.  It will display a couple notifications before completion and one when it is completed.  If your .gcode file has thousands of lines, then be patient while it works - it may take several minutes.
-
-The script also generates another .CSV file which arranges the probe data into a matrix.  Feel free to delete when you are finished.
