@@ -1,6 +1,6 @@
-# td0g's PCB Milling Tools
+# td0g's PCB Gcode Tools
 
-This program contains several tools for post-processing gcode files from Eagle.  To use, simply drag-and-drop the gcode file onto PCB_Gcode_Tools.exe and follow the command prompts.
+This program contains several tools for post-processing gcode files from Eagle.  To use, simply drag-and-drop the gcode file (with a Z-probe file if available) onto PCB_Gcode_Tools.exe and follow the command prompts.
 
 ## Tools:
 
@@ -42,7 +42,7 @@ This tool simply copies the original gcode path to a new location (without delet
 
 ### 5. Draw
 
-A quick way to review the gcode and check for issues.  Black lines are etches, red lines are travel.
+A quick way to review the gcode and check for issues.  Black lines are etches, red lines are travel.  It can be used before and after the gcode is edited to compare the results side-by-side.
 
 ## Instructions for Etch Auto-Levelling
 
