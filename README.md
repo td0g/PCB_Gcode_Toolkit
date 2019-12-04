@@ -26,11 +26,11 @@ There are two options available: Bilinear Interpolation and Bicubic Spline Inter
 
 Eagle has a habit of creating many separate etching tool paths.  This wastes lots of time as the mill has to raise the tool, move to the next path, lower the tool, then continue.
 
-The etch optimizer will combine all adjacent etch paths into one continuous cut, reducing travel time for the mill.  It's a simple way to increase efficiency.
+The etch optimizer will combine all adjacent etch paths into one continuous cut, reducing travel time for the mill.  It's a simple way to increase efficiency by reducing travel time.
 
 ### 3. Drill Optimizer
 
-The drill order in Eagle is poorly optimized, resulting in a large and unnecessary amount of travel time.  By performing a travelling salesman algorithm on the drill order, the travel time can be reduced.
+The drill order in Eagle is poorly optimized, resulting in a large and unnecessary amount of travel time.  By performing a travelling salesman algorithm on the drill order, the travel time can be greatly reduced.
 
 Two options are available for optimizing drill order: a 'standard' algorithm and a 'genetic permutation' algorithm.  The standard algorithm simply breaks up the board into sections, sorts the drill order to go through each section in a logical path, and finally brute-forces the most efficient path through each section.  It is consistent but doesn't find the best solution.
 
@@ -38,7 +38,7 @@ The genetic permutation algorithm is more complicated.  It is inconsistent and n
 
 ### 4. Copy
 
-This tool simply copies the original gcode path to a new location (without deleting the original).  It is useful for cutting two identical boards on one PCB.
+This tool simply copies the original gcode path to a new location (without deleting the original).  It is useful for cutting two identical boards on one PCB.  It can be used multiple times and will only copy the original gcode (IE. using the tool twice will result in three boards, not four).
 
 ### 5. Draw
 
