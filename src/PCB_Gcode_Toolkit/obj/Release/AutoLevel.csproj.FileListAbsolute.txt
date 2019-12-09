@@ -1,0 +1,16 @@
+C:\Users\tgerritsen\source\repos\AutoLevel\AutoLevel\bin\Release\AutoLevel.exe.config
+C:\Users\tgerritsen\source\repos\AutoLevel\AutoLevel\bin\Release\AutoLevel.exe
+C:\Users\tgerritsen\source\repos\AutoLevel\AutoLevel\bin\Release\AutoLevel.pdb
+C:\Users\tgerritsen\source\repos\AutoLevel\AutoLevel\obj\Release\AutoLevel.csprojAssemblyReference.cache
+C:\Users\tgerritsen\source\repos\AutoLevel\AutoLevel\obj\Release\AutoLevel.csproj.CoreCompileInputs.cache
+C:\Users\tgerritsen\source\repos\AutoLevel\AutoLevel\obj\Release\AutoLevel.exe
+C:\Users\tgerritsen\source\repos\AutoLevel\AutoLevel\obj\Release\AutoLevel.pdb
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\AutoLevel\AutoLevel\bin\Release\AutoLevel.exe.config
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\AutoLevel\AutoLevel\obj\Release\AutoLevel.exe
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\AutoLevel\AutoLevel\obj\Release\AutoLevel.pdb
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\AutoLevel\AutoLevel\bin\Release\AutoLevel.exe
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\AutoLevel\AutoLevel\bin\Release\AutoLevel.pdb
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\AutoLevel\AutoLevel\obj\Release\AutoLevel.csprojResolveAssemblyReference.cache
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\PCB_Gcode_Tools\AutoLevel\bin\Release\AutoLevel.exe.config
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\PCB_Gcode_Tools\AutoLevel\obj\Release\AutoLevel.exe
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\PCB_Gcode_Tools\AutoLevel\obj\Release\AutoLevel.pdb
