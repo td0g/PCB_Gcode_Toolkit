@@ -2,6 +2,9 @@
 
 This program contains several tools for post-processing gcode files from Eagle.  To use, simply drag-and-drop the gcode file (with a Z-probe file if available) onto PCB_Gcode_Tools.exe and follow the command prompts.
 
+https://youtu.be/JNCeBOY9sTc
+
+
 ## Tools:
 
 1. Etch/Drill Copy
