@@ -32,7 +32,10 @@ Many workpiece blanks aren't flat.  This is especially true of PCB blanks, which
 
 If you are able to probe the surface of the blank workpiece, then you can use this tool to apply the data you collected to a .Gcode file.  It will create a new .Gcode file which constantly adjusts the Z height of the tool to account for the unevenness of the blank.
 
-There are two options available: Bilinear Interpolation and Bicubic Spline Interpolation.  The Bilinear Interpolation is a simpler algorithm but requires a dense probe grid.  The newer Bicubic Spline Interpolation is more fidelic to a curved PCB and provides more accuracy with less data.
+There are two options available: Bilinear Interpolation and Bicubic Spline Interpolation.  The Bilinear Interpolation is a simpler algorithm but requires a dense probe grid.  
+
+The newer Bicubic Spline Interpolation is more fidelic to a curved PCB and provides more accuracy with less data.
+!(https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Interpolation-bicubic.svg/220px-Interpolation-bicubic.svg.png)
 
 
 ### 4. Drill Optimizer
