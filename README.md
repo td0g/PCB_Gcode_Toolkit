@@ -4,7 +4,7 @@ This program contains several tools for post-processing gcode files from Eagle. 
 
 https://youtu.be/JNCeBOY9sTc
 
-I began developing this program back when there weren't really any free solutions available.  It is simple, runs from a command line interface and requires little user input.  It also uses clever algorithms to improve efficiency: The bicubic spline interpolation means it needs fewer probe points to auto-level a pcb board, the divide-and-conquer TSP algorithm is fast and effective, and the etch optimizer eliminates almost all unnecessary travel movements.
+I began developing this program back when there weren't really any free solutions available.  It is simple, runs from a command line interface and requires little user input.  It also uses clever algorithms to improve efficiency: The **bicubic spline interpolation** means it needs fewer probe points to auto-level a pcb board, the **divide-and-conquer TSP algorithm** is fast and effective, and the **etch optimizer** eliminates almost all unnecessary travel movements.
 
 ## Tools:
 
