@@ -6,6 +6,8 @@ https://youtu.be/JNCeBOY9sTc
 
 I began developing this program back when there weren't really any free solutions available.  It is simple, runs from a command line interface and requires little user input.  It also uses clever algorithms to improve efficiency: The **bicubic spline interpolation** means it needs fewer probe points to auto-level a pcb board, the **divide-and-conquer TSP algorithm** is fast and effective, and the **etch optimizer** eliminates almost all unnecessary travel movements.
 
+This tool has currently not been tested on KiCad gcode.
+
 ## Tools:
 
 1. Etch/Drill Copy
@@ -49,10 +51,9 @@ The newer Bicubic Spline Interpolation is more fidelic to a curved PCB and provi
 
 The drill order in Eagle is poorly optimized, resulting in a large and unnecessary amount of travel time.  By performing a travelling salesman algorithm on the drill order, the travel time can be greatly reduced.
 
-Two options are available for optimizing drill order: a 'standard' algorithm and a 'genetic permutation' algorithm.  The standard algorithm simply breaks up the board into sections, sorts the drill order to go through each section in a logical path, and finally brute-forces the most efficient path through each section.  It is consistent but doesn't find the best solution.
+Two options are available for optimizing drill order: a **genetic permutation** algorithm and a **divide-and-conquer** algorithm.  If in doubt, try both on a board.  The program will not make any changes if it can't find a better solution.
 
-The genetic permutation algorithm is more complicated.  It is inconsistent and not recommended for larger boards, but works very well with smaller boards.
-
+The genetic permutation algorithm processes the entire board at once.  It is inconsistent and may fail on larger boards, but will generally provide a very good solution.  The divide-and-conquer algorithm simply breaks up the board into sections, selects an appropriate algorithm for each section (genetic permutation or brute-force), and finally performs each section in a logical order.
 
 ### 5. Draw
 
