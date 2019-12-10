@@ -35,7 +35,7 @@ If you are able to probe the surface of the blank workpiece, then you can use th
 There are two options available: Bilinear Interpolation and Bicubic Spline Interpolation.  The Bilinear Interpolation is a simpler algorithm but requires a dense probe grid.  
 
 The newer Bicubic Spline Interpolation is more fidelic to a curved PCB and provides more accuracy with less data.
-!(https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Interpolation-bicubic.svg/220px-Interpolation-bicubic.svg.png)
+![Bicubic Spline Interpolation](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Interpolation-bicubic.svg/220px-Interpolation-bicubic.svg.png)
 
 
 ### 4. Drill Optimizer
