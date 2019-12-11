@@ -1,6 +1,6 @@
 # td0g's PCB Gcode Toolkit
 
-This program contains several tools for post-processing gcode files from Eagle.  To use, simply drag-and-drop the gcode file (along with a text file containing Z-probe data available) onto PCB_Gcode_Tools.exe and follow the command prompts.
+This program contains several tools for post-processing gcode files from Eagle.  To use, simply drag-and-drop the gcode file (along with a text file containing Z-probe data if available) onto PCB_Gcode_Tools.exe and follow the command prompts.
 
 https://youtu.be/JNCeBOY9sTc
 
@@ -38,7 +38,7 @@ Many workpiece blanks aren't flat.  This is especially true of PCB blanks, which
 
 If you are able to probe the surface of the blank workpiece, then you can use this tool to apply the data you collected to a .Gcode file.  It will create a new .Gcode file which constantly adjusts the Z height of the tool to account for the unevenness of the blank.
 
-There are two options available: Bilinear Interpolation and Bicubic Spline Interpolation.  A description of both algorithms is available in PDF format.  The Bilinear Interpolation is a simpler algorithm but requires a dense probe grid. 
+There are two options available: Bilinear Interpolation and Bicubic Spline Interpolation.  Descriptions of both algorithms are available in PDF format.  The Bilinear Interpolation is a simpler algorithm but requires a dense probe grid. 
 
 ![Bilinear Interpolation - Courtesy of Wikipedia](https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Interpolation-bilinear.svg/220px-Interpolation-bilinear.svg.png)
 
