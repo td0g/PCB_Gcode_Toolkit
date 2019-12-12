@@ -22,6 +22,8 @@ This tool has currently not been tested on KiCad gcode.
 
 6. Undo Previous Tool Action
 
+7. Backlash Compensator (COMING SOON)
+
 ### 1. Copy
 
 This tool simply copies the original gcode path to a new location (without deleting the original).  It is useful for cutting two identical boards on one PCB.  It can be used multiple times and will only copy the original gcode (IE. using the tool twice will result in three boards, not four).
@@ -78,3 +80,7 @@ To apply a Z-probe array to a gcode file, drag the .CSV file with the array and 
 *10,0,0.08*
 
 *10,10,0.02*
+
+##Feedback
+
+If you have any question, suggestions, or bug finds, please feel free to contact me.  I am continually developing new features and improvements, and am happy to hear from the community.  Thanks!
