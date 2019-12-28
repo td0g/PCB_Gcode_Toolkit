@@ -1,0 +1,13 @@
+C:\Users\tgerritsen\source\repos\AutoLevel\AutoLevel\obj\Debug\AutoLevel.csprojAssemblyReference.cache
+C:\Users\tgerritsen\source\repos\AutoLevel\AutoLevel\obj\Debug\AutoLevel.csproj.CoreCompileInputs.cache
+C:\Users\tgerritsen\source\repos\AutoLevel\AutoLevel\bin\Debug\AutoLevel.exe.config
+C:\Users\tgerritsen\source\repos\AutoLevel\AutoLevel\bin\Debug\AutoLevel.exe
+C:\Users\tgerritsen\source\repos\AutoLevel\AutoLevel\bin\Debug\AutoLevel.pdb
+C:\Users\tgerritsen\source\repos\AutoLevel\AutoLevel\obj\Debug\AutoLevel.exe
+C:\Users\tgerritsen\source\repos\AutoLevel\AutoLevel\obj\Debug\AutoLevel.pdb
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\AutoLevel\AutoLevel\bin\Debug\AutoLevel.exe.config
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\AutoLevel\AutoLevel\obj\Debug\AutoLevel.exe
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\AutoLevel\AutoLevel\obj\Debug\AutoLevel.pdb
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\AutoLevel\AutoLevel\obj\Debug\AutoLevel.csprojResolveAssemblyReference.cache
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\AutoLevel\AutoLevel\bin\Debug\AutoLevel.exe
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\AutoLevel\AutoLevel\bin\Debug\AutoLevel.pdb

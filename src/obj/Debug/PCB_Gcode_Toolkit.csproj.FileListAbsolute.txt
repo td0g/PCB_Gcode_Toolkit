@@ -1,0 +1,6 @@
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\PCB_Gcode_Toolkit\PCB_Gcode_Toolkit\bin\Debug\PCB_Gcode_Toolkit.exe.config
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\PCB_Gcode_Toolkit\PCB_Gcode_Toolkit\bin\Debug\PCB_Gcode_Toolkit.exe
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\PCB_Gcode_Toolkit\PCB_Gcode_Toolkit\bin\Debug\PCB_Gcode_Toolkit.pdb
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\PCB_Gcode_Toolkit\PCB_Gcode_Toolkit\obj\Debug\PCB_Gcode_Toolkit.exe
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\PCB_Gcode_Toolkit\PCB_Gcode_Toolkit\obj\Debug\PCB_Gcode_Toolkit.pdb
+C:\Users\Tyler\Documents\Visual Studio 2015\Projects\PCB_Gcode_Toolkit\PCB_Gcode_Toolkit\obj\Debug\PCB_Gcode_Toolkit.csprojResolveAssemblyReference.cache

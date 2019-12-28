@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <StartArguments>"C:\Users\Tyler\Documents\Visual Studio 2015\Projects\AutoLevel\AutoLevel\BC2etch2.gcode" "C:\Users\Tyler\Documents\Visual Studio 2015\Projects\AutoLevel\AutoLevel\PROBE.txt"</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartArguments>"C:\Users\Tyler\Documents\Visual Studio 2015\Projects\PCB_Gcode_Toolkit\PCB_Gcode_Toolkit\drill.gcode" "C:\Users\Tyler\Documents\Visual Studio 2015\Projects\PCB_Gcode_Toolkit\PCB_Gcode_Toolkit\probe.txt"</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PublishUrlHistory>publish\</PublishUrlHistory>
+    <InstallUrlHistory />
+    <SupportUrlHistory />
+    <UpdateUrlHistory />
+    <BootstrapperUrlHistory />
+    <ErrorReportUrlHistory />
+    <FallbackCulture>en-US</FallbackCulture>
+    <VerifyUploadedFiles>false</VerifyUploadedFiles>
+  </PropertyGroup>
+</Project>
