@@ -18,11 +18,11 @@ This tool has currently not been tested on KiCad gcode.
 
 4. Drill Optimizer
 
-5. Draw Gcode Path
+5. Backlash Compensation
 
-6. Undo Previous Tool Action
+6. Draw Gcode Path
 
-7. Backlash Compensator (COMING SOON)
+7. Undo Previous Tool Action
 
 ### 1. Copy
 
@@ -57,7 +57,12 @@ Two options are available for optimizing drill order: a **genetic permutation** 
 
 The genetic permutation algorithm processes the entire board at once.  It is inconsistent and may fail on larger boards, but will generally provide a very good solution.  The divide-and-conquer algorithm simply breaks up the board into sections, selects an appropriate algorithm for each section (genetic permutation or brute-force), and finally performs each section in a logical order.
 
-### 5. Draw
+
+### 5. Backlash Compensation
+
+Currently this feature only affects Z-axis backlash.  When the Z-axis is moved downward, the backlash compensation function will 'overshoot' the Z-position, then return to the normal Z-position.  This forces the tool down to the correct position. 
+
+### 6. Draw
 
 A quick way to review the gcode and check for issues.  Black lines are etches, red lines are travel.  It can be used before and after the gcode is edited to compare the results side-by-side.
 
