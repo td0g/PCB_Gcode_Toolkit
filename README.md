@@ -89,3 +89,8 @@ To apply a Z-probe array to a gcode file, drag the .CSV file with the array and 
 ## Feedback
 
 If you have any question, suggestions, or bug finds, please feel free to contact me.  I am continually developing new features and improvements, and am happy to hear from the community.  Thanks!
+
+
+## License
+
+Software is licensed under a [GNU GPL v3 License](https://www.gnu.org/licenses/gpl-3.0.txt)
